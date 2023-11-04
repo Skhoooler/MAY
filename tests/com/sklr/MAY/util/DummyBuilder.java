@@ -1,6 +1,6 @@
 package com.sklr.MAY.util;
 
-import com.sklr.MAY.obj.MAYObject;
+import com.sklr.MAY.obj.MAYRequest;
 import com.sklr.MAY.util.enumerations.HTTP_Method;
 
 import java.io.ByteArrayInputStream;
@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,10 +91,10 @@ public class DummyBuilder {
      * @param requestType An enum for describing what type of request it is (image, document, json, etc.)
      * @return a Dummy MAY request
      */
-    public static MAYObject createDummyMAYRequest(RequestType requestType) {
-        MAYObject dummy = new MAYObject(new InetSocketAddress(dummyPort));
-        dummy.getRequest().setProtocol("HTTP/1.1");
-        dummy.getRequest().setHeaders(createDummyHTTPRequestHeaders(requestType));
+    public static MAYRequest createDummyMAYRequest(SocketAddress dummyAddress, RequestType requestType) {
+        MAYRequest dummy = new MAYRequest(dummyAddress);
+        dummy.setProtocol("HTTP/1.1");
+        dummy.setHeaders(createDummyHTTPRequestHeaders(requestType));
 
         return dummy;
     }
@@ -135,7 +136,7 @@ public class DummyBuilder {
         return dummyHeaders;
     }
 
-    public static MAYObject createEmptyDummyMAYObject() { return new MAYObject(new InetSocketAddress(dummyPort));}
+    //public static MAYRequest createEmptyDummyMAYObject() { return new MAYRequest(new InetSocketAddress(dummyPort));}
 
     public static int getDummyPort() { return dummyPort; }
 }

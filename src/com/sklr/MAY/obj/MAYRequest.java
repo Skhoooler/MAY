@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
  * Java bean pertaining to all relevant data in a request to MAY.
  */
 public class MAYRequest {
+    private final SocketAddress foreignAddress;
     private String protocol;
     private HTTP_Method method;
     private String URI;
@@ -27,9 +29,21 @@ public class MAYRequest {
 
     /**
      * Parse the incoming InputStream into the rest of the MAYRequest Object.
-     * @param in An InputStream that contains the HTTP Request
+     * @param foreignAddress The IP Address & Port number of the request, as an InetSocketAddress
      */
-    public MAYRequest(InputStream in) {
+    public MAYRequest(SocketAddress foreignAddress) {
+        this.foreignAddress = foreignAddress;
+
+        method = HTTP_Method.ERROR;
+        URI = "ERROR";
+        protocol = "ERROR";
+
+        headers = new HashMap<>();
+        body = new ArrayList<>();
+    }
+
+
+    public void parseRequest(InputStream in) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
@@ -41,15 +55,6 @@ public class MAYRequest {
         } catch (IOException e) {
             Logger.error("Invalid HTTP request, could not parse.");
         }
-    }
-
-    public MAYRequest() {
-        method = HTTP_Method.ERROR;
-        URI = "ERROR";
-        protocol = "ERROR";
-
-        headers = new HashMap<>();
-        body = new ArrayList<>();
     }
 
     /**
@@ -195,6 +200,10 @@ public class MAYRequest {
 
     public void setBody(List<String> body) {
         this.body = body;
+    }
+
+    public SocketAddress getForeignAddress() {
+        return foreignAddress;
     }
 
     // OTHER METHODS

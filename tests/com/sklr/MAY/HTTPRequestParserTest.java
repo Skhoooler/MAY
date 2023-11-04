@@ -1,6 +1,6 @@
 package com.sklr.MAY;
 
-import com.sklr.MAY.obj.MAYObject;
+import com.sklr.MAY.obj.MAYRequest;
 import com.sklr.MAY.util.DummyBuilder;
 import com.sklr.MAY.util.Logger;
 import com.sklr.MAY.util.RequestType;
@@ -9,10 +9,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 public class HTTPRequestParserTest {
-    private String HTTP_11 = "HTTP/1.1";
-    private String dummyURI = "\\home\\dummy\\address";
+    private final String HTTP_11 = "HTTP/1.1";
+    private final String dummyURI = "\\home\\dummy\\address";
+    private final SocketAddress dummyAddress = new InetSocketAddress("localhost", 12345);
 
 
 
@@ -20,14 +23,14 @@ public class HTTPRequestParserTest {
     public void parseGETRequest() {
         Logger.test("Parse valid GET request");
         InputStream dummyRequestStream = DummyBuilder.createDummyHTTPRequestInputStream(HTTP_Method.GET, dummyURI, RequestType.TEXT);
-        MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+        MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
         dummy.parseRequest(dummyRequestStream);
 
-        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getRequest().getURI());
-        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.GET, dummy.getRequest().getMethod());
-        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getRequest().getProtocol());
-        assertNotNull("The request headers have not been set/are null.", dummy.getRequest().getHeaders());
+        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getURI());
+        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.GET, dummy.getMethod());
+        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getProtocol());
+        assertNotNull("The request headers have not been set/are null.", dummy.getHeaders());
     }
 
     @Test
@@ -40,13 +43,13 @@ public class HTTPRequestParserTest {
             Logger.subtest(undefinedMethod);
 
             InputStream dummyRequestStreamUndefinedMethod = DummyBuilder.createDummyHTTPRequestInputStream(undefinedMethod, dummyURI, RequestType.TEXT);
-            MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+            MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
             dummy.parseRequest(dummyRequestStreamUndefinedMethod);
 
-            assertEquals(undefinedMethod + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getRequest().getMethod());
-            assertEquals(undefinedMethod + ": " + "Requested URI for undefined method is not \"ERROR\"", "ERROR", dummy.getRequest().getURI());
-            assertEquals(undefinedMethod + ": " + "Protocol for undefined method was not set to \"ERROR\"", "ERROR", dummy.getRequest().getProtocol());
+            assertEquals(undefinedMethod + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getMethod());
+            assertEquals(undefinedMethod + ": " + "Requested URI for undefined method is not \"ERROR\"", "ERROR", dummy.getURI());
+            assertEquals(undefinedMethod + ": " + "Protocol for undefined method was not set to \"ERROR\"", "ERROR", dummy.getProtocol());
         }
     }
 
@@ -60,13 +63,13 @@ public class HTTPRequestParserTest {
             Logger.subtest(error);
 
             InputStream dummyRequestStreamErrorMethod = DummyBuilder.createDummyHTTPRequestInputStream(error, dummyURI, RequestType.TEXT);
-            MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+            MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
             dummy.parseRequest(dummyRequestStreamErrorMethod);
 
-            assertEquals(error + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getRequest().getMethod());
-            assertEquals(error + ": " + "Requested URI for error method is not \"ERROR\"", "ERROR", dummy.getRequest().getURI());
-            assertEquals(error + ": " + "Protocol for undefined error was not set to \"ERROR\"", "ERROR", dummy.getRequest().getProtocol());
+            assertEquals(error + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getMethod());
+            assertEquals(error + ": " + "Requested URI for error method is not \"ERROR\"", "ERROR", dummy.getURI());
+            assertEquals(error + ": " + "Protocol for undefined error was not set to \"ERROR\"", "ERROR", dummy.getProtocol());
         }
     }
 
@@ -80,13 +83,13 @@ public class HTTPRequestParserTest {
             Logger.subtest(symbol);
 
             InputStream dummyRequestStreamSymbolMethod = DummyBuilder.createDummyHTTPRequestInputStream(symbol, dummyURI, RequestType.TEXT);
-            MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+            MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
             dummy.parseRequest(dummyRequestStreamSymbolMethod);
 
-            assertEquals(symbol + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getRequest().getMethod());
-            assertEquals(symbol + ": " + "Requested URI for symbol method is not \"ERROR\"", "ERROR", dummy.getRequest().getURI());
-            assertEquals(symbol + ": " + "Protocol for symbol method was not set to \"ERROR\"", "ERROR", dummy.getRequest().getProtocol());
+            assertEquals(symbol + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getMethod());
+            assertEquals(symbol + ": " + "Requested URI for symbol method is not \"ERROR\"", "ERROR", dummy.getURI());
+            assertEquals(symbol + ": " + "Protocol for symbol method was not set to \"ERROR\"", "ERROR", dummy.getProtocol());
         }
 
     }
@@ -101,13 +104,13 @@ public class HTTPRequestParserTest {
             Logger.subtest(number);
 
             InputStream dummyRequestStreamNumericMethod = DummyBuilder.createDummyHTTPRequestInputStream(number, dummyURI, RequestType.TEXT);
-            MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+            MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
             dummy.parseRequest(dummyRequestStreamNumericMethod);
 
-            assertEquals(number + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getRequest().getMethod());
-            assertEquals(number + ": " + "Requested URI for numeric method is not \"ERROR\"", "ERROR", dummy.getRequest().getURI());
-            assertEquals(number + ": " + "Protocol for numeric method was not set to \"ERROR\"", "ERROR", dummy.getRequest().getProtocol());
+            assertEquals(number + ": " + "HTTP method was not set to \"ERROR\"", HTTP_Method.ERROR, dummy.getMethod());
+            assertEquals(number + ": " + "Requested URI for numeric method is not \"ERROR\"", "ERROR", dummy.getURI());
+            assertEquals(number + ": " + "Protocol for numeric method was not set to \"ERROR\"", "ERROR", dummy.getProtocol());
         }
     }
 
@@ -116,14 +119,14 @@ public class HTTPRequestParserTest {
         Logger.test("Parse valid DELETE request");
 
         InputStream dummyRequestStream = DummyBuilder.createDummyHTTPRequestInputStream(HTTP_Method.DELETE, dummyURI, RequestType.TEXT);
-        MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+        MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
         dummy.parseRequest(dummyRequestStream);
 
-        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getRequest().getURI());
-        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.DELETE, dummy.getRequest().getMethod());
-        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getRequest().getProtocol());
-        assertNotNull("The request headers have not been set/are null.", dummy.getRequest().getHeaders());
+        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getURI());
+        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.DELETE, dummy.getMethod());
+        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getProtocol());
+        assertNotNull("The request headers have not been set/are null.", dummy.getHeaders());
     }
 
     @Test
@@ -131,13 +134,13 @@ public class HTTPRequestParserTest {
         Logger.test("Parse valid POST request");
 
         InputStream dummyRequestStream = DummyBuilder.createDummyHTTPRequestInputStream(HTTP_Method.POST, dummyURI, RequestType.TEXT);
-        MAYObject dummy = DummyBuilder.createEmptyDummyMAYObject();
+        MAYRequest dummy = DummyBuilder.createDummyMAYRequest(dummyAddress, RequestType.TEXT);
 
         dummy.parseRequest(dummyRequestStream);
 
-        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getRequest().getURI());
-        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.POST, dummy.getRequest().getMethod());
-        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getRequest().getProtocol());
-        assertNotNull("The request headers have not been set/are null.", dummy.getRequest().getHeaders());
+        assertEquals("The URI of the request line was not parsed correctly.", dummyURI, dummy.getURI());
+        assertEquals("The method of the request line was not parsed correctly.", HTTP_Method.POST, dummy.getMethod());
+        assertEquals("The protocol of the request line was not parsed correctly", HTTP_11, dummy.getProtocol());
+        assertNotNull("The request headers have not been set/are null.", dummy.getHeaders());
     }
 }

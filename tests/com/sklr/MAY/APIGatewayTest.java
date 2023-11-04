@@ -1,18 +1,7 @@
 package com.sklr.MAY;
 
-import com.sklr.MAY.obj.MAYObject;
-import com.sklr.MAY.util.DummyBuilder;
 import com.sklr.MAY.util.Logger;
-import com.sklr.MAY.util.RequestType;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import com.sklr.MAY.util.enumerations.HTTP_Method;
-import com.sklr.MAY.util.enumerations.Content_Type;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class APIGatewayTest {
     APIGateway gateway = new APIGateway();
