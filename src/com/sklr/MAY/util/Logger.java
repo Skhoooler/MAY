@@ -1,5 +1,8 @@
 package com.sklr.MAY.util;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 
 /**
@@ -7,6 +10,7 @@ import java.time.LocalDateTime;
  * have a uniform format for each type of message sent to the console.
  */
 public class Logger {
+    private static final String TAB = "\t";
     private static final String RESET = "\u001B[0m";
     private static final String ERROR = "\u001B[31m";
     private static final String WARN  = "\u001B[33m";
@@ -48,6 +52,10 @@ public class Logger {
     public static void error(String s) {
         System.out.println(time() + ERROR + "ERROR: " + s + RESET);
     }
+    public static void error(String s, Exception e) {
+        System.out.println(time() + ERROR + "ERROR: " + s + RESET);
+        printStackTrace(e);
+    }
 
     /**
      * For when you need some text to be more easily picked out from the other stuff
@@ -80,6 +88,35 @@ public class Logger {
         return Formatter.formatLoggerDateTime(LocalDateTime.now());
     }
 
+    /**
+     * Prints the stacktrace of exceptions to the logger
+     * @param e The exception object
+     */
+    private static void printStackTrace(Exception e) {
+        // Get stack trace as a String
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+
+        // Print to logger
+        String[] eArray = sw.toString().split("\n");
+
+        for (String line : eArray) {
+            System.out.println(time() + TAB + line);
+        }
+
+        // Close Writers
+        try {
+            sw.flush();
+            sw.close();
+
+            pw.flush();
+            pw.close();
+        } catch (IOException e2) {
+            error("Error closing StringWriter or PrintWriter");
+            e2.printStackTrace();
+        }
+    }
 }
 
 // References

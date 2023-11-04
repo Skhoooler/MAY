@@ -40,8 +40,7 @@ public class Server {
             run(0); // 0 has the system pick its own port.
 
         } catch (IOException e) {
-            Logger.error("Cannot listen on port " + serverSocket.getLocalPort() + ".");
-            e.printStackTrace();
+            Logger.error("Cannot listen on port " + serverSocket.getLocalPort() + ".", e);
         }
     }
 
@@ -61,12 +60,10 @@ public class Server {
             out.flush();
 
         } catch (NullPointerException e) {
-            Logger.error("Response Object was null. Could not respond to request.");
-            e.printStackTrace();
+            Logger.error("Response Object was null. Could not respond to request.", e);
 
         } catch (IOException e) {
-            Logger.error("Error responding to the client.");
-            e.printStackTrace();
+            Logger.error("Something went wrong while responding to the client.", e);
         }
     }
 
@@ -79,9 +76,9 @@ public class Server {
     private void disconnect(Socket server) {
         try {
             server.close();
-            Logger.log("Disconnected from " + server.getRemoteSocketAddress() + ".\n");
+            Logger.log("Disconnected from " + server.getRemoteSocketAddress() + ".");
         } catch (IOException e) {
-            Logger.error("Error disconnecting from address " + server.getRemoteSocketAddress() + ".");
+            Logger.error("Error disconnecting from address " + server.getRemoteSocketAddress() + ".", e);
         }
     }
 }

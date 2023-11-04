@@ -25,10 +25,10 @@ public class Main {
 
 
         } catch (NumberFormatException e) {
-            Logger.error("Could not parse the user defined port. Please ensure that it is a number.");
+            Logger.error("Could not parse the user defined port. Please ensure that it is a number.", e);
             System.exit(-1);
         } catch (IllegalArgumentException e) {
-            Logger.error("The given port number " + args[0] + " is not a valid port number. Valid port numbers range from 1 to 65535");
+            Logger.error("The given port number " + args[0] + " is not a valid port number. Valid port numbers range from 1 to 65535", e);
             System.exit(-1);
         } catch (ArrayIndexOutOfBoundsException e) {
             Logger.warn("No port given. The port will be selected automatically.");

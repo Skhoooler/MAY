@@ -53,7 +53,7 @@ public class MAYRequest {
             parseBody(reader);
 
         } catch (IOException e) {
-            Logger.error("Invalid HTTP request, could not parse.");
+            Logger.error("Invalid HTTP request, could not parse.", e);
         }
     }
 
@@ -68,7 +68,7 @@ public class MAYRequest {
             }
 
         } catch(IOException e) {
-            Logger.error("Could not parse HTTP body");
+            Logger.error("Could not parse HTTP body.", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class MAYRequest {
             }
 
         } catch (IOException e) {
-            Logger.error("Could not parse HTTP headers.");
+            Logger.error("Could not parse HTTP headers.", e);
         }
     }
 
@@ -107,7 +107,7 @@ public class MAYRequest {
 
             headers.put(header.substring(0, index), header.substring(index + 1));
         } catch (IllegalArgumentException e) {
-            Logger.error("Could not read the header: " + header + ".");
+            Logger.error("Could not read the header: " + header + ".", e);
         }
     }
 
@@ -142,9 +142,9 @@ public class MAYRequest {
             return;
 
         } catch (IllegalArgumentException e) {
-            Logger.error("Invalid HTTP method.");
+            Logger.error("Invalid HTTP method.", e);
         } catch (Exception e) {
-            Logger.error("Invalid request line: " + requestLine + ".");
+            Logger.error("Invalid request line: " + requestLine + ".", e);
         }
 
         // If there was an issue parsing the request line, set each element to error

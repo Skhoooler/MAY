@@ -5,9 +5,7 @@ import com.sklr.MAY.util.PropertyAccess;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MAYResponse {
     private String protocol;
