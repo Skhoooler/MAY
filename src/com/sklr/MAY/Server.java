@@ -2,10 +2,15 @@ package com.sklr.MAY;
 
 import com.sklr.MAY.obj.MAYRequest;
 import com.sklr.MAY.obj.MAYResponse;
+import com.sklr.MAY.util.Formatter;
 import com.sklr.MAY.util.Logger;
+import com.sklr.MAY.util.PropertyAccess;
+import com.sklr.MAY.util.enumerations.Content_Type;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 public class Server {
     private ServerSocket serverSocket;
@@ -60,7 +65,8 @@ public class Server {
             out.flush();
 
         } catch (NullPointerException e) {
-            Logger.error("Response Object was null. Could not respond to request.", e);
+            Logger.error("Response Object was null, sending last-ditch response.", e);
+            sendLastDitchResponse(server);
 
         } catch (IOException e) {
             Logger.error("Something went wrong while responding to the client.", e);
@@ -71,7 +77,7 @@ public class Server {
      * Disconnects a server socket. Any streams (or objects built from those streams) associated with the server socket
      * must not be closed unless done through this method. Closing a stream that comes from the server socket also closes
      * the socket. Closing the server here should close everything all at once.
-     * @param server A connected socket
+     * @param server A socket connected to the client
      */
     private void disconnect(Socket server) {
         try {
@@ -79,6 +85,44 @@ public class Server {
             Logger.log("Disconnected from " + server.getRemoteSocketAddress() + ".");
         } catch (IOException e) {
             Logger.error("Error disconnecting from address " + server.getRemoteSocketAddress() + ".", e);
+        }
+    }
+
+    /**
+     * A last-ditch effort to send something to the client. This should only trigger under the most dire circumstances.
+     * @param server A socket connected to the client
+     */
+    private void sendLastDitchResponse(Socket server) {
+        try {
+            String lastDitchHTML = """
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>500 - Internal Server Error</title>
+                    </head>
+                    <body>
+                        <p1>500 - Internal Server Error.</p1>
+                    </body>
+                    </html>
+                    """;
+
+            String lastDitchResponse =
+                    "HTTP/1.1 500 Internal Server Error" +
+                    "\nContent-Length:" + lastDitchHTML.length() +
+                    "\nContent-Type:" + Content_Type.HTML.toString() +
+                    "\nContent-Language:en" +
+                    "\nDate:" + Formatter.formatHTTPDateTime(LocalDateTime.now()) +
+                    "\nServer:" + PropertyAccess.getInstance().getVersionedName() +
+                    "\n\n" + lastDitchHTML;
+
+            OutputStream out = server.getOutputStream();
+            out.write(lastDitchResponse.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+            Logger.log("Successfully sent last-ditch response to " + server.getRemoteSocketAddress() + ".");
+
+        } catch (Exception e) {
+            Logger.error("Error sending last ditch response.", e);
         }
     }
 }

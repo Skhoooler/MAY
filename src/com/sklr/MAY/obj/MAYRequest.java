@@ -216,7 +216,7 @@ public class MAYRequest {
     public String toString() {
         String str = getRequestLine();
 
-        boolean logHeaders = Boolean.parseBoolean(PropertyAccess.getInstance().getValue("LOG_HEADERS"));
+        boolean logHeaders = Boolean.parseBoolean(PropertyAccess.getInstance().getValue("LOG_REQUEST_AND_RESPONSE_HEADERS"));
         if (logHeaders) {
             str += Formatter.formatHTTPHeaders(headers) + Formatter.formatHTTPBody(body);
         }

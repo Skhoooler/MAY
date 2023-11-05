@@ -15,7 +15,7 @@ public class MAYResource {
     private final String lastModified;
 
     // CONSTRUCTORS
-    MAYResource(File resource, Content_Type contentType) {
+    public MAYResource(File resource, Content_Type contentType) {
         this.resource = resource;
         this.path = resource.getPath();
         this.contentLength = resource.length();
@@ -23,7 +23,7 @@ public class MAYResource {
         this.lastModified = Formatter.formatHTTPDateTime(LocalDateTime.now());
     }
 
-    MAYResource(File resource, Content_Type contentType, String lastModified) {
+    public MAYResource(File resource, Content_Type contentType, String lastModified) {
         this.resource = resource;
         this.path = resource.getPath();
         this.contentLength = resource.length();
